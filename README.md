@@ -1,5 +1,7 @@
 # match-sticks
 
+![Python package](https://github.com/benjaminfjones/match-sticks/workflows/Python%20package/badge.svg)
+
 A program that enumerates certain constrained sets of match sticks (edges of
 a certain graph on the standard integer lattice points in R^2).
 
