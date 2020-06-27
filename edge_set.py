@@ -1,3 +1,8 @@
+"""
+API for `Edge`s and `EdgeSet`s.
+
+See README.md for a description of the problem that this code solves.
+"""
 from __future__ import annotations
 
 import argparse
@@ -8,6 +13,9 @@ import my_memo
 
 
 class Orientation(Enum):
+    """
+    Edge orientation.
+    """
     VERTICAL = "Vertical"
     HORIZONTAL = "Horizontal"
 
@@ -46,11 +54,25 @@ class Edge:
     @staticmethod
     @my_memo.memoize
     def vert_edge(c: int, r: int) -> Edge:
+        """
+        Static factory method that produces (unique) vertical edges.
+
+        This method is memoized as an optimization. The number of Edges
+        constructed while enumerating EdgeSets is very large if done naively.
+        Memoization ensures that every `Edge.vert_edge(c, r)` constructed at
+        runtime shares memory with every other one at the same position.  """
         return Edge(c, r, Orientation.VERTICAL)
 
     @staticmethod
     @my_memo.memoize
     def horiz_edge(c: int, r: int) -> Edge:
+        """
+        Static factory method that produces (unique) horizontal edges.
+
+        This method is memoized as an optimization. The number of Edges
+        constructed while enumerating EdgeSets is very large if done naively.
+        Memoization ensures that every `Edge.horiz_edge(c, r)` constructed at
+        runtime shares memory with every other one at the same position.  """
         return Edge(c, r, Orientation.HORIZONTAL)
 
 
@@ -58,6 +80,9 @@ class EdgeSet:
     """
     A set of horizontal and vertical unit length edges, spanning points on the
     std integer lattice in R^2.
+
+    Horizontal edges are represented by their left-most XY-coordinate and
+    vertical edges by their bottom-most coordinate.
 
     Invariants:
         - forall e : edges. e.orientation == HORIZONTAL => 0 <= e.row <= height
@@ -132,7 +157,48 @@ class EdgeSet:
                     else:
                         break  # goto next col
         return True
+    
+    def pretty_print(self) -> str:
+        """
+        Return a pretty printed string representation of the edge set.
 
+        Example:
+
+        ```
+        *--*  *
+        |
+        *  *--*
+        
+        *  *--*
+        ```
+        """
+        # Start with a character array that we update in place. The array has
+        # 3 characters for each horizontal edge: "*--" and two rows for each
+        # logical row (see example above).
+        #
+        # The first row of the array corresponds to the lowest row in the grid
+        # and the first character in each row corresponds to the left-most
+        # integer point on that row.
+        grid = [[" " for _ in range(3*self.width+1)] for _ in range(2*self.height+1)]
+        # draw integer points
+        for r in range(self.height+1):
+            for c in range(self.width+1):
+                x = 3*c
+                y = 2*r
+                grid[y][x] = "*"
+        # fill in edges
+        for e in self.edges:
+            x = 3*e.col
+            y = 2*e.row
+            if e.orientation == Orientation.HORIZONTAL:
+                grid[y][x+1] = "-"
+                grid[y][x+2] = "-"
+            else:
+                grid[y+1][x] = "|"
+        # join the character array, reversing the rows
+        row_strings = ["".join(array_row) for array_row in grid]
+        return "\n".join(reversed(row_strings))
+                
 
 def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, None]:
     # TODO

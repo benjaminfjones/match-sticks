@@ -60,3 +60,20 @@ def test_place_vert():
     assert e.is_left_ok(0, 2)
     assert not e.is_left_ok(1, 2)
     assert not e.is_left_ok(2, 2)
+
+
+def test_pretty_print():
+    """
+    Recreate one of the valid 2x2 edge sets from the README.
+    """
+    e = EdgeSet(2,2)
+    e.place_horiz_stack(0, 2)
+    e.place_horiz_stack(1, 1)
+    e.place_vert_stack(1, 1)
+    print(e.pretty_print())
+    expected = """*--*  *
+|  |   
+*--*--*
+       
+*--*--*"""
+    assert e.pretty_print() == expected

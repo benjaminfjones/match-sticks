@@ -1,3 +1,8 @@
+"""
+A very simple memoizer.
+
+I should probably just use the `lru_cache` builtin one, but <shrug/>
+"""
 from typing import Any, Dict, Tuple
 
 # global memoization table
@@ -21,6 +26,9 @@ def get_id_tuple(f, args, kwargs, mark=object()):
 def memoize(f):
     """
     A basic class memoizer.
+
+    This can be used to decorate a class (meaning every method), or single
+    methods/functions.
     """
     def memoized(*args, **kwargs):
         key = get_id_tuple(f, args, kwargs)
