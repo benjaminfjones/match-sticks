@@ -15,11 +15,11 @@ def test_memoizer():
 
     assert len(my_memo._memoized) == 3
 
-    e5 = Edge.vert_edge(1, 0)
-    e6 = Edge.horiz_edge(0, 0)
+    Edge.vert_edge(1, 0)
+    Edge.horiz_edge(0, 0)
     assert len(my_memo._memoized) == 3
 
-    
+
 def test_place_horiz():
     e = EdgeSet(2, 2)
     e.place_horiz_stack(0, 1)

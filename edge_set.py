@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 from enum import Enum
-from typing import Set
+from typing import Generator, Set
 
 import my_memo
 
@@ -27,14 +27,14 @@ class Edge:
         self.col = c
         self.row = r
         self.orientation = o
-    
+
     def __eq__(self, other: Edge) -> bool:
         return (
             self.row == other.row and
             self.col == other.col and
             self.orientation == other.orientation
         )
-    
+
     def __str__(self) -> str:
         return f"Edge({self.col}, {self.row}, {self.orientation})"
 
@@ -71,7 +71,7 @@ class EdgeSet:
         self.height = height
         self.width = width
         self.edges = set()
-    
+
     def __str__(self):
         return f"EdgeSet(height={self.height}, width={self.width}, {self.edges})"
 
@@ -102,7 +102,6 @@ class EdgeSet:
         """
         return all([Edge.vert_edge(c, row) in self.edges for c in range(col)])
 
-
     def is_down_ok(self, col: int, row: int) -> bool:
         """
         Determine if all horizontal edges are in the edge set that are below
@@ -115,23 +114,23 @@ class EdgeSet:
         For each row, call `is_left_ok` at the right-most vertical edge, and
         similarly for the columns and horizontal edges.
         """
-        for row in range(height):
-            for col in range(width+1, -1, -1):
+        for row in range(self.height):
+            for col in range(self.width+1, -1, -1):
                 if Edge.vert_edge(col, row) in self.edges:
                     if not self.is_left_ok(col, row):
                         return False
                     else:
                         break  # goto next row
 
-        for col in range(width):
-            for row in range(height+1, -1, -1):
+        for col in range(self.width):
+            for row in range(self.height+1, -1, -1):
                 if Edge.horiz_edge(col, row) in self.edges:
                     if not self.is_down_ok(col, row):
                         return False
                     else:
                         break  # goto next col
         return True
-    
+
 
 def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, None]:
     # TODO
@@ -159,6 +158,7 @@ def main():
 
     print(f"Enumerating match sticks on {args.height} x {args.width} grid")
     print(f"Number of valid edge sets: {len(list(enumerate_edge_sets(2, 2)))}")
+
 
 if __name__ == '__main__':
     main()

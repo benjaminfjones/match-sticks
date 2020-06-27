@@ -1,19 +1,25 @@
+from typing import Any, Dict, Tuple
+
+# global memoization table
+_memoized: Dict[Tuple[Any, Any, Any, Any], Any] = {}
+
+
 def get_id_tuple(f, args, kwargs, mark=object()):
-    """ 
+    """
     Generate a unique key for a specific call.
     """
-    l = [id(f)]
+    id_list = [id(f)]
     for arg in args:
-        l.append(id(arg))
-    l.append(id(mark))
+        id_list.append(id(arg))
+    id_list.append(id(mark))
     for k, v in kwargs:
-        l.append(k)
-        l.append(id(v))
-    return tuple(l)
+        id_list.append(k)
+        id_list.append(id(v))
+    return tuple(id_list)
 
-_memoized = {}
+
 def memoize(f):
-    """ 
+    """
     A basic class memoizer.
     """
     def memoized(*args, **kwargs):
