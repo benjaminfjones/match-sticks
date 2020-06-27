@@ -104,7 +104,7 @@ $ pip install -e .
 To test:
 
 ```bash
-$ pip -m pytest
+$ python -m pytest
 ```
 
 To lint/typecheck:
@@ -118,8 +118,8 @@ $ mypy .
 ## TODO
 
 * [X] make initial package commit
-* [ ] get GitHub CI working
-* [ ] write a README description of the edge set constraints
+* [X] get GitHub CI working
+* [X] write a README description of the edge set constraints
 * [ ] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
 * [ ] test `edge_set` validator
 * [ ] write a recursive enumerator
