@@ -120,7 +120,7 @@ $ mypy .
 * [X] make initial package commit
 * [X] get GitHub CI working
 * [X] write a README description of the edge set constraints
-* [ ] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
-* [ ] test `edge_set` validator
+* [X] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
+* [X] test `edge_set` validator
 * [ ] write a recursive enumerator
 * [ ] validate results of enumeration using generator function formula

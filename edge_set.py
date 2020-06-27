@@ -76,6 +76,10 @@ class Edge:
         return Edge(c, r, Orientation.HORIZONTAL)
 
 
+# The number of boundary edges that is inadmissible for each unit square on the grid
+INADMISSIBLE_BOUNDARY = 3
+
+
 class EdgeSet:
     """
     A set of horizontal and vertical unit length edges, spanning points on the
@@ -83,6 +87,8 @@ class EdgeSet:
 
     Horizontal edges are represented by their left-most XY-coordinate and
     vertical edges by their bottom-most coordinate.
+
+    See the README.md for a description of what a "valid" edge set is.
 
     Invariants:
         - forall e : edges. e.orientation == HORIZONTAL => 0 <= e.row <= height
@@ -138,24 +144,40 @@ class EdgeSet:
 
     def validate_stacks(self) -> bool:
         """
-        For each row, call `is_left_ok` at the right-most vertical edge, and
-        similarly for the columns and horizontal edges.
+        For each row, call `is_left_ok` at the right-most present vertical edge.
+        Similarly for the columns and horizontal edges.
         """
+        # check vert edges
         for row in range(self.height):
-            for col in range(self.width+1, -1, -1):
+            # check columns starting at far right. Note: we don't need to check the 0-th
+            # column because there is nothing to the left of it.
+            for col in range(self.width+1, 0, -1):
                 if Edge.vert_edge(col, row) in self.edges:
                     if not self.is_left_ok(col, row):
                         return False
                     else:
                         break  # goto next row
 
+        # check horiz edges
         for col in range(self.width):
-            for row in range(self.height+1, -1, -1):
+            for row in range(self.height+1, 0, -1):
                 if Edge.horiz_edge(col, row) in self.edges:
                     if not self.is_down_ok(col, row):
                         return False
                     else:
                         break  # goto next col
+        
+        # check unit square constraints
+        for row in range(self.height):
+            for col in range(self.width):
+                boundary = filter(lambda e: e in self.edges, [
+                    Edge.horiz_edge(col, row),
+                    Edge.horiz_edge(col, row+1),
+                    Edge.vert_edge(col, row),
+                    Edge.vert_edge(col+1, row),
+                ])
+                if len(tuple(boundary)) == INADMISSIBLE_BOUNDARY:
+                    return False
         return True
     
     def pretty_print(self) -> str:
