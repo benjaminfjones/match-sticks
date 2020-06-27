@@ -28,7 +28,9 @@ class Edge:
         self.row = r
         self.orientation = o
 
-    def __eq__(self, other: Edge) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Edge):
+            raise NotImplementedError
         return (
             self.row == other.row and
             self.col == other.col and
