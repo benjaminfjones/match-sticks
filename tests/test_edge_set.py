@@ -1,8 +1,31 @@
 from edge_set import Edge, EdgeSet
+import copy
 import my_memo
 
 
+def test_copy():
+    e1 = EdgeSet(2, 2)
+    e1.place_horiz_edge(0, 1)
+    e1.place_horiz_edge(0, 2)
+    num_edges = len(my_memo._memoized)
+    e2 = copy.copy(e1)
+    e2.place_horiz_edge(0, 0)
+    assert e1 != e2
+    assert len(my_memo._memoized) == num_edges + 1
+
+
+def test_embed():
+    e = EdgeSet(0, 3)
+    e.place_horiz_stack(0, 0)
+    e.place_horiz_stack(2, 0)
+    f = e.embed()
+    assert f.height == e.height + 1
+    assert f.width == e.width
+    assert f.edges == e.edges
+
+
 def test_memoizer():
+    my_memo._memoized = type(my_memo._memoized)()
     e1 = Edge.vert_edge(0, 0)
     e2 = Edge.vert_edge(0, 0)
     assert e1 == e2
@@ -74,7 +97,7 @@ def test_validate_stack():
     e = EdgeSet(2, 2)
     e.place_horiz_stack(1, 1)
     e.place_vert_stack(0, 1)
-    e.edges.add(Edge.horiz_edge(0, 2))
+    e.place_horiz_edge(0, 2)
     assert not e.is_down_ok(0, 2)
     assert e.is_down_ok(1, 1)
     assert not e.check_constraints()  # missing horizontal edges below (0, 2)

@@ -34,6 +34,12 @@ class Edge:
         self.row = r
         self.orientation = o
 
+    def __copy__(self):
+        """
+        Copy constructor.
+        """
+        return EdgeSet(self.height, self.width, set(self.edges))
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Edge):
             raise NotImplementedError
@@ -105,6 +111,22 @@ class EdgeSet:
 
     def __str__(self):
         return f"EdgeSet(height={self.height}, width={self.width}, {self.edges})"
+
+    def place_horiz_edge(self, col: int, row: int) -> None:
+        """
+        Update `edge_set` by adding the horizontal edge at (col, row).
+        """
+        assert 0 <= row and row <= self.height
+        assert 0 <= col and col < self.width
+        self.edges.add(Edge.horiz_edge(col, row))
+
+    def place_vert_edge(self, col: int, row: int) -> None:
+        """
+        Update `edge_set` by adding the vertical edges at (col, row).
+        """
+        assert 0 <= row and row < self.height
+        assert 0 <= col and col <= self.width
+        self.edges.add(Edge.vert_edge(col, row))
 
     def place_horiz_stack(self, col: int, row: int) -> None:
         """
@@ -185,6 +207,15 @@ class EdgeSet:
                     return False
 
         return True
+
+    def embed(self):
+        """
+        Return a new edge set that is a copy of self, but on a grid one row
+        taller.
+        """
+        larger_set = copy.copy(self)
+        larger_set.height += 1
+        return larger_set
 
     def pretty_print(self) -> str:
         """
