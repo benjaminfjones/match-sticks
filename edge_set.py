@@ -142,7 +142,22 @@ class EdgeSet:
         """
         return all([Edge.horiz_edge(col, r) in self.edges for r in range(row)])
 
-    def validate_stacks(self) -> bool:
+    def check_vert_edge_constraint(self, col: int, row: int) -> bool:
+        return Edge.vert_edge(col, row) not in self.edges or self.is_left_ok(col, row)
+
+    def check_horiz_edge_constraint(self, col: int, row: int) -> bool:
+        return Edge.horiz_edge(col, row) not in self.edges or self.is_down_ok(col, row)
+
+    def check_boundary_constraint(self, col: int, row: int) -> bool:
+        boundary = filter(lambda e: e in self.edges, [
+            Edge.horiz_edge(col, row),
+            Edge.horiz_edge(col, row+1),
+            Edge.vert_edge(col, row),
+            Edge.vert_edge(col+1, row),
+        ])
+        return len(tuple(boundary)) != INADMISSIBLE_BOUNDARY
+
+    def check_constraints(self) -> bool:
         """
         For each row, call `is_left_ok` at the right-most present vertical edge.
         Similarly for the columns and horizontal edges.
@@ -151,35 +166,28 @@ class EdgeSet:
         for row in range(self.height):
             # check columns starting at far right. Note: we don't need to check the 0-th
             # column because there is nothing to the left of it.
-            for col in range(self.width+1, 0, -1):
-                if Edge.vert_edge(col, row) in self.edges:
-                    if not self.is_left_ok(col, row):
-                        return False
-                    else:
-                        break  # goto next row
+            for col in range(self.width, 0, -1):
+                if self.check_vert_edge_constraint(col, row):
+                    break  # goto next row
+                else:
+                    return False
 
         # check horiz edges
         for col in range(self.width):
-            for row in range(self.height+1, 0, -1):
-                if Edge.horiz_edge(col, row) in self.edges:
-                    if not self.is_down_ok(col, row):
-                        return False
-                    else:
-                        break  # goto next col
-        
+            for row in range(self.height, 0, -1):
+                if self.check_horiz_edge_constraint(col, row):
+                    break  # goto next column
+                else:
+                    return False
+
         # check unit square constraints
         for row in range(self.height):
             for col in range(self.width):
-                boundary = filter(lambda e: e in self.edges, [
-                    Edge.horiz_edge(col, row),
-                    Edge.horiz_edge(col, row+1),
-                    Edge.vert_edge(col, row),
-                    Edge.vert_edge(col+1, row),
-                ])
-                if len(tuple(boundary)) == INADMISSIBLE_BOUNDARY:
+                if not self.check_boundary_constraint(col, row):
                     return False
+
         return True
-    
+
     def pretty_print(self) -> str:
         """
         Return a pretty printed string representation of the edge set.
@@ -190,7 +198,7 @@ class EdgeSet:
         *--*  *
         |
         *  *--*
-        
+
         *  *--*
         ```
         """
@@ -220,7 +228,7 @@ class EdgeSet:
         # join the character array, reversing the rows
         row_strings = ["".join(array_row) for array_row in grid]
         return "\n".join(reversed(row_strings))
-                
+
 
 def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, None]:
     # TODO
