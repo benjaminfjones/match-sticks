@@ -110,5 +110,5 @@ def test_pretty_print():
 |  |   
 *--*--*
        
-*--*--*"""
+*--*--*"""  # noqa: W291,W293
     assert e.pretty_print() == expected
