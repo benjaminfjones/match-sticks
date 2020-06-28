@@ -4,11 +4,9 @@ API for `Edge`s and `EdgeSet`s.
 See README.md for a description of the problem that this code solves.
 """
 from __future__ import annotations
-
-import argparse
 from enum import Enum
-from typing import Generator, Set
-
+from typing import Set
+import copy
 import my_memo
 
 
@@ -228,35 +226,3 @@ class EdgeSet:
         # join the character array, reversing the rows
         row_strings = ["".join(array_row) for array_row in grid]
         return "\n".join(reversed(row_strings))
-
-
-def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, None]:
-    # TODO
-    yield EdgeSet(0, 0)
-
-
-# --- Main ---
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "height",
-        type=int,
-        metavar="HEIGHT",
-        help="height of the grid"
-    )
-    parser.add_argument(
-        "width",
-        type=int,
-        metavar="WIDTH",
-        help="width of the grid"
-    )
-
-    args = parser.parse_args()
-
-    print(f"Enumerating match sticks on {args.height} x {args.width} grid")
-    print(f"Number of valid edge sets: {len(list(enumerate_edge_sets(2, 2)))}")
-
-
-if __name__ == '__main__':
-    main()
