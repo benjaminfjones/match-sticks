@@ -85,21 +85,89 @@ Given an `n` x `m` rectangle,
 4. Exhibit the number of valid edge sets as a positive sum.
 
 
-## Building and Testing
+## Installation
 
 This package requires Python 3.7+. The main modules do not have any
 requirements beyond the Python standard library. In addition, `pytest` is
 required if you want to run tests. We use `flake8` and `mypy` for code
 analysis.
 
-To install the package in a virtual environment, from the package top-level directory:
+To check what python you have, try:
 
 ```bash
-$ python -m venv .venv
-$ source .venv/bin/activate
-$ pip install -r requirements.txt
-$ pip install -e .
+$ python3 --version
+Python 3.7.6
 ```
+
+To install and run the code in a virtual environment, run the following
+commands, assuming your python 3.7+ interpreter is called `python3`:
+
+```bash
+$ cd match-sticks
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+$ python3 -m pip install -r requirements.txt
+$ python3 -m pip install -e .
+```
+
+Now you can run the program:
+
+```bash
+$ python3 main.py --help
+usage: main.py [-h] [-v] WIDTH HEIGHT
+
+positional arguments:
+  WIDTH          width of the grid
+  HEIGHT         height of the grid
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  pretty print enumerated edge sets
+```
+
+To count (and print) valid edge sets on the 2x1 grid:
+
+```bash
+$ python3 main.py --verbose 1 1
+Enumerating valid edge sets on 1 x 1 grid
+
+1:
+*  *
+
+*  *
+
+2:
+*  *
+
+*--*
+
+3:
+*  *
+|
+*  *
+
+4:
+*--*
+
+*--*
+
+5:
+*  *
+|
+*--*
+
+6:
+*  *
+|  |
+*  *
+
+7:
+*--*
+|  |
+*--*
+```
+
+## Testing and Verification
 
 To test:
 
@@ -122,5 +190,5 @@ $ mypy .
 * [X] write a README description of the edge set constraints
 * [X] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
 * [X] test `edge_set` validator
-* [ ] write a recursive enumerator
+* [o] write a recursive enumerator
 * [ ] validate results of enumeration using generator function formula
