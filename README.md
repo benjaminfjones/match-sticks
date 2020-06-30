@@ -123,13 +123,15 @@ positional arguments:
 optional arguments:
   -h, --help     show this help message and exit
   -v, --verbose  pretty print enumerated edge sets
+  --profile         dump profiler statistics
+  --loglevel LEVEL  logging level to emit: DEBUG, INFO, WARNING (default),
+                    ERROR
 ```
 
 To count (and print) valid edge sets on the 2x1 grid:
 
 ```bash
 $ python3 main.py --verbose 1 1
-Enumerating valid edge sets on 1 x 1 grid
 
 1:
 *  *
@@ -167,6 +169,16 @@ Enumerating valid edge sets on 1 x 1 grid
 *--*
 ```
 
+By setting the log level to `INFO` you can see how many total edge set
+combinations were checked during execution:
+
+```bash
+$ python main.py --loglevel INFO 2 4
+INFO:Enumerating valid edge sets on 2 x 4 grid
+INFO:Total candidate edge sets checked: 4194304
+2359
+```
+
 ## Testing and Verification
 
 To test:
@@ -190,5 +202,5 @@ $ mypy .
 * [X] write a README description of the edge set constraints
 * [X] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
 * [X] test `edge_set` validator
-* [o] write a recursive enumerator
+* [.] write a recursive enumerator
 * [ ] validate results of enumeration using generator function formula

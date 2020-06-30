@@ -2,6 +2,7 @@ from edge_set import Edge, EdgeSet
 from typing import Generator
 from itertools import combinations
 from util import subsets
+import logging
 
 
 def enumerate_edge_sets(width: int, height: int) -> Generator[EdgeSet, None, None]:
@@ -90,9 +91,12 @@ def naively_enumerate_edge_sets(width: int, height: int) -> Generator[EdgeSet, N
         Edge.vert_edge(c, r) for c in range(width+1) for r in range(height)
     ]
     all_edge_subsets = subsets(all_horiz_edges + all_vert_edges)
+    c: int = 0
     for edge_subset in all_edge_subsets:
+        c += 1
         candidate = EdgeSet(width, height)
         for e in edge_subset:
             candidate.edges.add(e)
         if candidate.check_constraints():
             yield candidate
+    logging.info(f"Total candidate edge sets checked: {c}")
