@@ -38,7 +38,7 @@ class Edge:
         """
         Copy constructor.
         """
-        return EdgeSet(self.height, self.width, set(self.edges))
+        return EdgeSet(self.width, self.height, set(self.edges))
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Edge):
@@ -104,13 +104,13 @@ class EdgeSet:
     width: int
     edges: Set[Edge]
 
-    def __init__(self, height: int, width: int) -> None:
-        self.height = height
+    def __init__(self, width: int, height: int) -> None:
         self.width = width
+        self.height = height
         self.edges = set()
 
     def __str__(self):
-        return f"EdgeSet(height={self.height}, width={self.width}, {self.edges})"
+        return f"EdgeSet(width={self.width}, height={self.height}, {self.edges})"
 
     def place_horiz_edge(self, col: int, row: int) -> None:
         """

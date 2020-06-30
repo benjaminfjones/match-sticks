@@ -15,7 +15,7 @@ def test_copy():
 
 
 def test_embed():
-    e = EdgeSet(0, 3)
+    e = EdgeSet(3, 0)
     e.place_horiz_stack(0, 0)
     e.place_horiz_stack(2, 0)
     f = e.embed()

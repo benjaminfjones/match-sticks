@@ -1,9 +1,10 @@
 from edge_set import Edge, EdgeSet
 from typing import Generator
 from itertools import combinations
+from util import subsets
 
 
-def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, None]:
+def enumerate_edge_sets(width: int, height: int) -> Generator[EdgeSet, None, None]:
     """
     Recursively enumerate valid edge sets.
 
@@ -21,7 +22,7 @@ def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, Non
 
     *--*  *
 
-    In the 1x2 grid, it is also valid:
+    In the 2x1 grid, it is also valid:
 
     *  *  *
 
@@ -36,13 +37,13 @@ def enumerate_edge_sets(height: int, width: int) -> Generator[EdgeSet, None, Non
     The larger valid edge set can then be extended to all possible edge sets
     containing the original by adding edges and checking the constraints.
 
-    Similarly, given a valid edge set of a 1x2 grid:
+    Similarly, given a valid edge set of a 2x1 grid:
 
     *  *--*
     |
     *--*--*
 
-    The intersection with the lower-left 0x2 grid is also valid:
+    The intersection with the lower-left 2x0 grid is also valid:
 
     *--*--*
 
@@ -67,7 +68,31 @@ def enumerate_height_zero(width: int) -> Generator[EdgeSet, None, None]:
     columns = list(range(width))
     for num_edges in range(width+1):
         for combo in combinations(columns, num_edges):
-            es = EdgeSet(0, width)
+            es = EdgeSet(width, 0)
             for col in combo:
                 es.edges.add(Edge.horiz_edge(col, 0))
             yield es
+
+
+def naively_enumerate_edge_sets(width: int, height: int) -> Generator[EdgeSet, None, None]:
+    """
+    Naively enumerate valid edge sets by constructing every possible
+    combinations of edges on the heigth x width grid and validating the
+    constraints.
+
+    This is very inefficient in general, but serves as a good test for the
+    recursive enumeration for small values of height and width.
+    """
+    all_horiz_edges = [
+        Edge.horiz_edge(c, r) for c in range(width) for r in range(height+1)
+    ]
+    all_vert_edges = [
+        Edge.vert_edge(c, r) for c in range(width+1) for r in range(height)
+    ]
+    all_edge_subsets = subsets(all_horiz_edges + all_vert_edges)
+    for edge_subset in all_edge_subsets:
+        candidate = EdgeSet(width, height)
+        for e in edge_subset:
+            candidate.edges.add(e)
+        if candidate.check_constraints():
+            yield candidate
