@@ -6,6 +6,20 @@ from enumerate_edge_sets import naively_enumerate_edge_sets
 import argparse
 
 
+def run_enumeration(args):
+    # TODO replace naive version with recursive version
+    valid_edge_sets = naively_enumerate_edge_sets(args.width, args.height)
+
+    if args.verbose:
+        c = 0
+        for es in valid_edge_sets:
+            c = c + 1  # count like a mathematician
+            print(f"\n{c}:\n" + es.pretty_print())
+    else:
+        c = len(list(valid_edge_sets))
+        print(f"Number of valid edge sets: {c}")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -25,6 +39,11 @@ def main():
         action="store_true",
         help="pretty print enumerated edge sets"
     )
+    parser.add_argument(
+        "--profile",
+        action="store_true",
+        help="dump profiler statistics"
+    )
 
     args = parser.parse_args()
 
@@ -34,15 +53,11 @@ def main():
     if args.verbose:
         print(f"Enumerating valid edge sets on {args.width} x {args.height} grid")
 
-    c = 0
-    # TODO replace naive version with recursive version
-    for es in naively_enumerate_edge_sets(args.width, args.height):
-        c = c + 1  # count like a mathematician
-        if args.verbose:
-            print(f"\n{c}:\n" + es.pretty_print())
-
-    if not args.verbose:
-        print(f"Number of valid edge sets: {c}")
+    if args.profile:
+        import cProfile
+        cProfile.runctx("run_enumeration(args)", globals(), locals())
+    else:
+        run_enumeration(args)
 
 
 if __name__ == '__main__':

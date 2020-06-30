@@ -53,7 +53,11 @@ class Edge:
         return f"Edge({self.col}, {self.row}, {self.orientation})"
 
     def __hash__(self) -> int:
-        return hash((self.col, self.row, self.orientation))
+        """
+        Edges are cached globally, so we just use the object id as hash in order
+        to avoid significant overhead from hashing.
+        """
+        return id(self)
 
     @staticmethod
     @my_memo.memoize
