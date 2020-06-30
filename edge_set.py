@@ -150,23 +150,17 @@ class EdgeSet:
 
     def is_left_ok(self, col: int, row: int) -> bool:
         """
-        Determine if all vertical edges are in the edge set that are to the left
-        of the given vertical edge (including itself)
+        Return True if all vertical edges strictly to the left of the one at
+        (col, row) are in the edge set.
         """
         return all([Edge.vert_edge(c, row) in self.edges for c in range(col)])
 
     def is_down_ok(self, col: int, row: int) -> bool:
         """
-        Determine if all horizontal edges are in the edge set that are below
-        the given horizontal edge (not including itself)
+        Return True if all horizontal edges strictly below the one at
+        (col, row) are in the edge set.
         """
         return all([Edge.horiz_edge(col, r) in self.edges for r in range(row)])
-
-    def check_vert_edge_constraint(self, col: int, row: int) -> bool:
-        return Edge.vert_edge(col, row) not in self.edges or self.is_left_ok(col, row)
-
-    def check_horiz_edge_constraint(self, col: int, row: int) -> bool:
-        return Edge.horiz_edge(col, row) not in self.edges or self.is_down_ok(col, row)
 
     def check_boundary_constraint(self, col: int, row: int) -> bool:
         boundary = filter(lambda e: e in self.edges, [
@@ -177,7 +171,8 @@ class EdgeSet:
         ])
         return len(tuple(boundary)) != INADMISSIBLE_BOUNDARY
 
-    def check_constraints(self) -> bool:
+    # TODO refactor logic in this method to make it less complex
+    def check_constraints(self) -> bool:  # noqa: C901
         """
         For each row, call `is_left_ok` at the right-most present vertical edge.
         Similarly for the columns and horizontal edges.
@@ -187,18 +182,20 @@ class EdgeSet:
             # check columns starting at far right. Note: we don't need to check the 0-th
             # column because there is nothing to the left of it.
             for col in range(self.width, 0, -1):
-                if self.check_vert_edge_constraint(col, row):
-                    break  # goto next row
-                else:
-                    return False
+                if Edge.vert_edge(col, row) in self.edges:
+                    if self.is_left_ok(col, row):
+                        break  # goto next row
+                    else:
+                        return False
 
         # check horiz edges
         for col in range(self.width):
             for row in range(self.height, 0, -1):
-                if self.check_horiz_edge_constraint(col, row):
-                    break  # goto next column
-                else:
-                    return False
+                if Edge.horiz_edge(col, row) in self.edges:
+                    if self.is_down_ok(col, row):
+                        break  # goto next row
+                    else:
+                        return False
 
         # check unit square constraints
         for row in range(self.height):

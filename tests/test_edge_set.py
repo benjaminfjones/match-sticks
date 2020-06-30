@@ -85,6 +85,35 @@ def test_place_vert():
     assert not e.is_left_ok(2, 2)
 
 
+def test_is_left_ok_2x1_tee():
+    """
+    Test constraints for the set and some subsets of it:
+
+    *  *  *
+       |
+    *--*--*
+
+    """
+    e = EdgeSet(2, 1)
+    e.edges.add(Edge.horiz_edge(0, 0))
+    e.edges.add(Edge.horiz_edge(1, 0))
+    e.edges.add(Edge.vert_edge(1, 0))
+    assert e.is_left_ok(0, 0)
+    assert not e.is_left_ok(1, 0)
+    assert not e.is_left_ok(2, 0)
+    assert e.is_down_ok(0, 0)
+    assert e.is_down_ok(0, 1)
+    assert e.is_down_ok(1, 0)
+    assert e.is_down_ok(1, 1)
+    assert not e.check_constraints()
+
+    e.edges.remove(Edge.horiz_edge(0, 0))
+    assert not e.check_constraints()
+
+    e.edges.remove(Edge.horiz_edge(1, 0))
+    assert not e.check_constraints()
+
+
 def test_validate_stack():
     """
     Validate (or not) the four 2x2 examples in the README.
