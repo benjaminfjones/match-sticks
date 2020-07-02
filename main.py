@@ -5,21 +5,24 @@ Command line program for enumerating valid edge sets.
 from enumerate_edge_sets import naively_enumerate_edge_sets
 import argparse
 import logging
+import toms_algorithm
 
 
 def run_enumeration(args):
-    # TODO replace naive version with recursive version
-    valid_edge_sets = naively_enumerate_edge_sets(args.width, args.height)
-
-    if args.verbose:
-        c = 0
-        for es in valid_edge_sets:
-            c = c + 1  # count like a mathematician
-            print(f"\n{c}:\n" + es.pretty_print())
+    if args.toms:
+        print(toms_algorithm.count_valid_edge_sets(args.width, args.height))
     else:
-        c = len(list(valid_edge_sets))
-        # just print the number without any adornment. Makes the program more unix friendly.
-        print(c)
+        # TODO replace naive version with recursive version
+        valid_edge_sets = naively_enumerate_edge_sets(args.width, args.height)
+
+        if args.verbose:
+            c = 0
+            for es in valid_edge_sets:
+                c = c + 1  # count like a mathematician
+                print(f"\n{c}:\n" + es.pretty_print())
+        else:
+            # just print the number without any adornment. Makes the program more unix friendly.
+            print(len(list(valid_edge_sets)))
 
 
 def main():
@@ -35,6 +38,11 @@ def main():
         type=int,
         metavar="HEIGHT",
         help="height of the grid",
+    )
+    parser.add_argument(
+        "-t", "--toms",
+        action="store_true",
+        help="count valid edge sets using Tom's algorithm",
     )
     parser.add_argument(
         "-v", "--verbose",

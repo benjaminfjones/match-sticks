@@ -194,13 +194,20 @@ $ flake8 . --count --show-source --statistics
 $ mypy .
 ```
 
-
 ## TODO
 
 * [X] make initial package commit
 * [X] get GitHub CI working
 * [X] write a README description of the edge set constraints
 * [X] extend validation to include forall unitsquare. (num. edges on unitsquare) != 3
-* [X] test `edge_set` validator
+* [X] write a naive brute force enumerator
+* [X] test naive `edge_set` validator
 * [.] write a recursive enumerator
 * [ ] validate results of enumeration using generator function formula
+* [X] write an edge set counter that does not explicitly construct or enumerate edge sets
+
+## Acknowledgements
+
+The original problem was communicated to me by Kyle Ormsby
+(http://people.reed.edu/~ormsbyk/). The counting algorithm in
+`toms_algorithm.py` is due to Tom Edgar (https://www.plu.edu/math/staff/tom-edgar/).
