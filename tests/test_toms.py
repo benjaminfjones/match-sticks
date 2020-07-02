@@ -34,3 +34,14 @@ def test_toms_NxN():
     assert (
         [count_valid_edge_sets(n, n) for n in range(max_N+1)] == [1, 7, 115, 3451, 164731, 11467387]
     )
+
+
+def test_symmetry():
+    """
+    Assert that count_valid_edge_sets(m, n) == count_valid_edge_sets(n, m) for
+    a range of small m, n.
+    """
+    max_N = 6
+    for m in range(max_N):
+        for n in range(m):
+            assert count_valid_edge_sets(m, n) == count_valid_edge_sets(n, m)

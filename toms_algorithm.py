@@ -35,18 +35,22 @@ def count(z: int, j: int, b: int, m: int) -> int:
     """
     Count something mysterious.
 
+    Time complexity is O(log_b(z)).
+
     TODO:
-        - document parameters
+        - document parameters, all non-negative ints
         - describe what this counts
     """
     ds = digits(z, base=b)
+    n_zeros = 0
     if j in ds:
-        b_len = ds.index(j)
+        ds = ds[:ds.index(j)]
     else:
-        b_len = m
-    ds.extend((m-len(ds))*[0])
-    ds_lt_j = [i for i in range(b_len) if ds[i] <= j]
-    return len(ds_lt_j) + 2
+        if m <= len(ds):
+            ds = ds[:m]
+        else:
+            n_zeros = m - len(ds)
+    return sum(1 for d in ds if d <= j) + n_zeros + 2
 
 
 def count_valid_edge_sets(m: int, n: int) -> int:
@@ -55,8 +59,13 @@ def count_valid_edge_sets(m: int, n: int) -> int:
 
     Example:
 
-    >>> [ValidMatchsticks(i,i) for i in [0..6]]
+    >>> [count_valid_edge_sets(i, i) for i in range(7)]
     [1, 7, 115, 3451, 164731, 11467387, 1096832395]
+
+    Try this and go get a cup of coffee:
+
+    >>> count_valid_edge_sets(8, 8)
+    22111390122811
     """
     if n == 0:
         return 2**m
