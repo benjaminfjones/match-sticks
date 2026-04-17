@@ -100,7 +100,7 @@ Python 3.7.6
 ```
 
 To install and run the code in a virtual environment, run the following
-commands, assuming your python 3.7+ interpreter is called `python3`:
+commands, assuming your python 3.11+ interpreter is called `python3`:
 
 ```bash
 $ cd match-sticks
